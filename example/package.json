@@ -1,0 +1,18 @@
+{
+  "name": "draft-js-autocomplete-example",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "draft-js": "^0.10.5",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-scripts": "1.1.4",
+    "draft-js-autocomplete": "^1.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

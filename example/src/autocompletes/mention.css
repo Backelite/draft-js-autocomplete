@@ -1,0 +1,20 @@
+.Mention {
+  background: lightblue;
+}
+
+.MentionList {
+  position: absolute;
+  margin: 5px 0 0 0;
+  padding: 0;
+  box-shadow: 0 0 2px black;
+  list-style: none;
+  background: white;
+}
+
+.MentionListItem {
+  padding: 10px;
+}
+
+.MentionListItem.current {
+  background: lightgrey;
+}

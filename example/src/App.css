@@ -1,0 +1,10 @@
+.Title {
+  text-align: center;
+}
+
+.Editor {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid black;
+}
