@@ -1,5 +1,12 @@
 import { EditorState, convertFromRaw } from 'draft-js';
-import { addEntityToEditorState, findWithRegex, getAutocomplete, getMatch, getSuggestions } from '../utils';
+import {
+  addEntityToEditorState,
+  findWithRegex,
+  getAutocomplete,
+  getMatch,
+  getSuggestions,
+  isCurrentTextEmpty
+} from '../utils';
 import sinon from 'sinon';
 
 // We need to create an editorState
@@ -15,6 +22,14 @@ const contentRaw = {
   }, {
     "key": "deth4",
     "text": "I am @Jay",
+    "type": "unstyled",
+    "depth": 0,
+    "inlineStyleRanges": [],
+    "entityRanges": [],
+    "data": {}
+  }, {
+    "key": "bg8np",
+    "text": "",
     "type": "unstyled",
     "depth": 0,
     "inlineStyleRanges": [],
@@ -44,7 +59,8 @@ describe('Utils', () => {
         text: 'Jay',
         start: 5,
         end: 9
-      } ]
+      } ],
+      "bg8np": []
     };
     // Test findWithRegex for each block
     blocks.forEach((block, index) => {
@@ -54,6 +70,17 @@ describe('Utils', () => {
       expect(matches).toStrictEqual(expectedMatches[index]);
       expect(callback.called).toEqual(matches.length > 0); // Callback should if be called only when matches
     })
+  });
+
+  it('test isCurrentTextEmpty', () => {
+    // Move to first block
+    updateSelectionTo('5qnrt');
+    let isEmpty = isCurrentTextEmpty(editorState);
+    expect(isEmpty).toBeFalsy();
+    // Move to last block
+    updateSelectionTo('bg8np');
+    isEmpty = isCurrentTextEmpty(editorState);
+    expect(isEmpty).toBeTruthy();
   });
 
   it('test getMatch', () => {
@@ -69,6 +96,7 @@ describe('Utils', () => {
     };
 
     // Selection start at 0 in the first block, no match found
+    updateSelectionTo('5qnrt');
     let match = getMatch(editorState, matches);
     expect(match).toBeNull();
 
