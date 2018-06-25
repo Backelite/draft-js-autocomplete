@@ -10,7 +10,7 @@ import {
 } from '../utils';
 import sinon from 'sinon';
 
-// We need to create an editorState
+// Content raw for testing
 const contentRaw = {
   "blocks": [ {
     "key": "5qnrt",
@@ -38,21 +38,27 @@ const contentRaw = {
     "data": {}
   } ], "entityMap": {}
 };
-const contentState = convertFromRaw(contentRaw);
-let editorState = EditorState.createWithContent(contentState);
-
-const updateSelectionTo = (blockKey, start = 0, end = 0) => {
-  const currentSelectionState = editorState.getSelection();
-  const selection = currentSelectionState.merge({
-    anchorKey: blockKey,
-    focusKey: blockKey,
-    anchorOffset: start,
-    focusOffset: end,
-  });
-  editorState = EditorState.forceSelection(editorState, selection);
-};
 
 describe('Utils', () => {
+  const contentState = convertFromRaw(contentRaw);
+  const updateSelectionTo = (editorState, blockKey, start = 0, end = 0) => {
+    const currentSelectionState = editorState.getSelection();
+    const selection = currentSelectionState.merge({
+      anchorKey: blockKey,
+      focusKey: blockKey,
+      anchorOffset: start,
+      focusOffset: end,
+    });
+    return EditorState.forceSelection(editorState, selection);
+  };
+  let editorState;
+
+  // Init editor state
+  beforeAll(() => editorState = EditorState.createWithContent(contentState));
+
+  // Move selection to first block
+  beforeEach(() => editorState = updateSelectionTo(editorState, '5qnrt'));
+
   it('test findWithRegex', () => {
     const blocks = contentState.getBlockMap();
     const expectedMatches = {
@@ -76,12 +82,11 @@ describe('Utils', () => {
 
   it('test isCurrentTextEmpty', () => {
     // Move to first block
-    updateSelectionTo('5qnrt');
     let isEmpty = isCurrentTextEmpty(editorState);
     expect(isEmpty).toBeFalsy();
 
     // Move to last block
-    updateSelectionTo('bg8np');
+    editorState = updateSelectionTo(editorState, 'bg8np');
     isEmpty = isCurrentTextEmpty(editorState);
     expect(isEmpty).toBeTruthy();
   });
@@ -99,17 +104,16 @@ describe('Utils', () => {
     };
 
     // Selection start at 0 in the first block, no match found
-    updateSelectionTo('5qnrt');
     let match = getMatch(editorState, matches);
     expect(match).toBeNull();
 
     // We move to second block at 0, no match found
-    updateSelectionTo("deth4");
+    editorState = updateSelectionTo(editorState, 'deth4');
     match = getMatch(editorState, matches);
     expect(match).toBeNull();
 
     // We move selection to second block on the fifth character, match should be @Jay
-    updateSelectionTo("deth4", 5);
+    editorState = updateSelectionTo(editorState, 'deth4', 5);
     match = getMatch(editorState, matches);
     expect(match).toStrictEqual({ // Match @Jay
       text: 'Jay',
@@ -178,14 +182,19 @@ describe('Utils', () => {
       id: 1,
       firstname: 'Jay'
     };
-    const newEditorState = addEntityToEditorState(editorState, item, match);
+
+    // Change block
+    editorState = updateSelectionTo(editorState, 'deth4');
+
+    // And add entity
+    editorState = addEntityToEditorState(editorState, item, match);
 
     // Test that format callback was called
     expect(spy.called).toBeTruthy();
     expect(spy.args[0][0]).toStrictEqual(item);
 
     // Last entity created
-    const newContentState = newEditorState.getCurrentContent();
+    const newContentState = editorState.getCurrentContent();
     const lastCreatedEntityKey = newContentState.getLastCreatedEntityKey();
     const entity = newContentState.getEntity(lastCreatedEntityKey);
     expect(entity.get('type')).toEqual(match.type);
@@ -193,26 +202,24 @@ describe('Utils', () => {
     expect(entity.get('data')).toEqual(item);
 
     // Test selection move after the entity
-    const newSelection = newEditorState.getSelection();
+    const newSelection = editorState.getSelection();
     expect(newSelection.anchorOffset).toEqual(8);
-    editorState = newEditorState;
   });
 
   // Need to be tested with an entity into editorState,
   // it's why we are testing it here
-  it('test isCurrentTextAnEntity', () => {
+  it('test isCurrentSelectionAnEntity', () => {
     // Move to first block
-    updateSelectionTo('5qnrt');
     let isEntity = isCurrentSelectionAnEntity(editorState);
     expect(isEntity).toBeFalsy();
 
     // Move to second block at entity
-    updateSelectionTo('deth4', 6);
+    editorState = updateSelectionTo(editorState, 'deth4', 6);
     isEntity = isCurrentSelectionAnEntity(editorState);
     expect(isEntity).toBeTruthy();
 
     // Move to second block at entity
-    updateSelectionTo('bg8np', 6);
+    editorState = updateSelectionTo(editorState, 'bg8np', 6);
     isEntity = isCurrentSelectionAnEntity(editorState);
     expect(isEntity).toBeFalsy();
   });
