@@ -5,7 +5,8 @@ import {
   getAutocomplete,
   getMatch,
   getSuggestions,
-  isCurrentTextEmpty
+  isCurrentTextEmpty,
+  isCurrentSelectionAnEntity
 } from '../utils';
 import sinon from 'sinon';
 
@@ -44,6 +45,7 @@ const updateSelectionTo = (blockKey, start = 0, end = 0) => {
   const currentSelectionState = editorState.getSelection();
   const selection = currentSelectionState.merge({
     anchorKey: blockKey,
+    focusKey: blockKey,
     anchorOffset: start,
     focusOffset: end,
   });
@@ -77,6 +79,7 @@ describe('Utils', () => {
     updateSelectionTo('5qnrt');
     let isEmpty = isCurrentTextEmpty(editorState);
     expect(isEmpty).toBeFalsy();
+
     // Move to last block
     updateSelectionTo('bg8np');
     isEmpty = isCurrentTextEmpty(editorState);
@@ -192,5 +195,25 @@ describe('Utils', () => {
     // Test selection move after the entity
     const newSelection = newEditorState.getSelection();
     expect(newSelection.anchorOffset).toEqual(8);
+    editorState = newEditorState;
+  });
+
+  // Need to be tested with an entity into editorState,
+  // it's why we are testing it here
+  it('test isCurrentTextAnEntity', () => {
+    // Move to first block
+    updateSelectionTo('5qnrt');
+    let isEntity = isCurrentSelectionAnEntity(editorState);
+    expect(isEntity).toBeFalsy();
+
+    // Move to second block at entity
+    updateSelectionTo('deth4', 6);
+    isEntity = isCurrentSelectionAnEntity(editorState);
+    expect(isEntity).toBeTruthy();
+
+    // Move to second block at entity
+    updateSelectionTo('bg8np', 6);
+    isEntity = isCurrentSelectionAnEntity(editorState);
+    expect(isEntity).toBeFalsy();
   });
 });
