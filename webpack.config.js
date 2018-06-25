@@ -38,7 +38,7 @@ module.exports = {
     ]
   },
   externals: {
-    // Don't bundle react or react-dom
+    // Don't bundle peer dependencies
     react: {
       commonjs: "react",
       commonjs2: "react",
@@ -50,6 +50,18 @@ module.exports = {
       commonjs2: "react-dom",
       amd: "ReactDOM",
       root: "ReactDOM"
+    },
+    "prop-types": {
+      commonjs: "prop-types",
+      commonjs2: "prop-types",
+      amd: "PropTypes",
+      root: "PropTypes"
+    },
+    "draft-js": {
+      commonjs: "draft-js",
+      commonjs2: "draft-js",
+      amd: "draft-js",
+      root: "draft-js"
     }
   }
 };
