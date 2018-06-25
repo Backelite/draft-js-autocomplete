@@ -86,7 +86,7 @@ export function isCurrentSelectionAnEntity(editorState) {
   const endOffset = selectionState.getEndOffset();
   const entityBefore = currentContentBlock.getEntityAt(startOffset - 1);
   const entityAfter = currentContentBlock.getEntityAt(endOffset);
-  return (entityBefore || entityAfter);
+  return (entityBefore !== null || entityAfter !== null);
 }
 
 /**
