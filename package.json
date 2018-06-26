@@ -1,13 +1,23 @@
 {
   "name": "draft-js-autocomplete",
   "version": "1.0.0",
-  "main": "dist/index.js",
   "repository": "https://github.com/Backelite/draft-js-autocomplete",
   "author": {
     "name": "Laurent Bello",
     "email": "bellolau@gmail.com"
   },
   "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "LICENSE.md"
+  ],
+  "keywords": [
+    "draftjs",
+    "editor",
+    "react",
+    "autocomplete"
+  ],
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
