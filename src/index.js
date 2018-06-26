@@ -29,7 +29,9 @@ class Autocomplete extends Component {
     onDownArrow: PropTypes.func,
     onUpArrow: PropTypes.func,
     onEscape: PropTypes.func,
-    onTab: PropTypes.func
+    onTab: PropTypes.func,
+    keyBindingFn: PropTypes.func,
+    handleKeyCommand: PropTypes.func
   };
 
   static defaultProps = {
@@ -229,11 +231,6 @@ class Autocomplete extends Component {
       editorState,
       children,
       onChange,
-      autocompletes, //eslint-disable-line no-unused-vars
-      onFocus, //eslint-disable-line no-unused-vars
-      onBlur, //eslint-disable-line no-unused-vars
-      onDownArrow, //eslint-disable-line no-unused-vars
-      onUpArrow, //eslint-disable-line no-unused-vars
       ...rest
     } = this.props;
 
@@ -322,23 +319,23 @@ class Autocomplete extends Component {
     }
   }
 
-  onFocus() {
+  onFocus(e) {
     this.setState({
       focus: true
     });
 
     if (this.props.onFocus) {
-      this.props.onFocus();
+      this.props.onFocus(e);
     }
   }
 
-  onBlur() {
+  onBlur(e) {
     this.setState({
       focus: false
     });
 
     if (this.props.onBlur) {
-      this.props.onBlur();
+      this.props.onBlur(e);
     }
   }
 
@@ -359,7 +356,7 @@ class Autocomplete extends Component {
     }
 
     if (this.props.onDownArrow) {
-      this.props.onDownArrow();
+      this.props.onDownArrow(e);
     }
   }
 
@@ -379,7 +376,7 @@ class Autocomplete extends Component {
     }
 
     if (this.props.onUpArrow) {
-      this.props.onUpArrow();
+      this.props.onUpArrow(e);
     }
   }
 
@@ -397,7 +394,7 @@ class Autocomplete extends Component {
     }
 
     if (this.props.onEscape) {
-      this.props.onEscape();
+      this.props.onEscape(e);
     }
   }
 
@@ -410,28 +407,31 @@ class Autocomplete extends Component {
       this.addEntityWithSelectedSuggestion();
     }
 
-    if (this.props.onEscape) {
-      this.props.onEscape();
+    if (this.props.onTab) {
+      this.props.onTab(e);
     }
   }
 
   keyBindingFn(e) {
+    const { keyBindingFn } = this.props;
     const { focus, match } = this.state;
 
     if (focus && match && e.keyCode === 13) {
       return 'add-entity';
     }
 
-    return getDefaultKeyBinding(e);
+    return keyBindingFn ? keyBindingFn(e) : getDefaultKeyBinding(e);
   }
 
   handleKeyCommand(command) {
+    const { handleKeyCommand } = this.props;
+
     if (command === 'add-entity') {
       this.addEntityWithSelectedSuggestion();
       return 'handled';
     }
 
-    return 'not-handled';
+    return handleKeyCommand ? handleKeyCommand(command) : 'not-handled';
   }
 
   render() {
