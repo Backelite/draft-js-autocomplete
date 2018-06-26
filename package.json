@@ -2,14 +2,18 @@
   "name": "draft-js-autocomplete",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "repository": "git@gitlab.com:bellolau/draftjs-autocomplete.git",
-  "author": "Laurent Bello <laurent.bello@backelite.com>",
+  "repository": "https://github.com/Backelite/draft-js-autocomplete",
+  "author": {
+    "name": "Laurent Bello",
+    "email": "bellolau@gmail.com"
+  },
   "license": "MIT",
   "scripts": {
     "start": "webpack --watch",
     "build": "webpack",
     "test": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "prepublish": "rm -rf ./dist && npm run build"
   },
   "peerDependencies": {
     "draft-js": "^0.10.5",
