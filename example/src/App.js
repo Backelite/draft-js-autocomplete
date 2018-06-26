@@ -8,6 +8,9 @@ import 'draft-js/dist/Draft.css';
 import mention from './autocompletes/mention';
 import hashtag from './autocompletes/hashtag';
 
+import './autocompletes/mention.css';
+import './autocompletes/hashtag.css';
+
 class App extends Component {
 
   autocompletes = [

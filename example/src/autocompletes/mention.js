@@ -1,7 +1,5 @@
 import React from 'react';
 
-import './mention.css';
-
 const users = [
   {
     firstname: 'Bruce',

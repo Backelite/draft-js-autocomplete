@@ -1,7 +1,5 @@
 import React from 'react';
 
-import './hashtag.css';
-
 const hashtags = [
   'react',
   'draft-js',
