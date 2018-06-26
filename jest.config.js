@@ -4,5 +4,9 @@ module.exports = {
   ],
   verbose: true,
   notify: true,
-  notifyMode: "change"
+  notifyMode: "change",
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/example/"
+  ]
 };
