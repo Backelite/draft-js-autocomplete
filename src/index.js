@@ -46,6 +46,15 @@ class Autocomplete extends Component {
       selectedSuggestion: 0
     };
 
+    this.getDecorator = this.getDecorator.bind(this);
+    this.createEntityStrategy = this.createEntityStrategy.bind(this);
+    this.createAutocompleteStrategy = this.createAutocompleteStrategy.bind(this);
+    this.updateMatch = this.updateMatch.bind(this);
+    this.resetMatch = this.resetMatch.bind(this);
+    this.getChildren = this.getChildren.bind(this);
+    this.buildSuggestionsList = this.buildSuggestionsList.bind(this);
+    this.onSuggestionClick = this.onSuggestionClick.bind(this);
+    this.addEntityWithSelectedSuggestion = this.addEntityWithSelectedSuggestion.bind(this);
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onDownArrow = this.onDownArrow.bind(this);
@@ -78,7 +87,7 @@ class Autocomplete extends Component {
    *
    * @returns {CompositeDraftDecorator}
    */
-  getDecorator = () => {
+  getDecorator() {
     const { autocompletes } = this.props;
 
     const strategies = autocompletes.reduce((previous, autocomplete) => {
@@ -97,7 +106,7 @@ class Autocomplete extends Component {
     }, []);
 
     return new CompositeDecorator(strategies);
-  };
+  }
 
   /**
    * Create strategy function when entity found
@@ -105,7 +114,7 @@ class Autocomplete extends Component {
    * @param type
    * @returns {Function}
    */
-  createEntityStrategy = (type) => {
+  createEntityStrategy(type) {
     return (contentBlock, callback, contentState) => {
       // Set entity for existing ones
       contentBlock.findEntityRanges(
@@ -120,7 +129,7 @@ class Autocomplete extends Component {
         callback
       );
     }
-  };
+  }
 
   /**
    * Create a strategy to isolate text when matching one of autocomplete prop regex
@@ -128,7 +137,7 @@ class Autocomplete extends Component {
    * @param autocomplete
    * @returns {Function}
    */
-  createAutocompleteStrategy = (autocomplete) => {
+  createAutocompleteStrategy(autocomplete) {
     return (contentBlock, callback) => {
       const reg = new RegExp(String.raw({
         raw: `(${autocomplete.prefix})(\\S*)(\\s|$)` // eslint-disable-line no-useless-escape
@@ -146,14 +155,14 @@ class Autocomplete extends Component {
         matches
       })
     }
-  };
+  }
 
   /**
    * Update suggestions
    *
    * @returns {Promise<void>}
    */
-  updateMatch = async () => {
+  async updateMatch() {
     const { matches, focus } = this.state;
     const { editorState, autocompletes } = this.props;
 
@@ -200,21 +209,21 @@ class Autocomplete extends Component {
       match: newMatch,
       selectedSuggestion
     });
-  };
+  }
 
-  resetMatch = () => {
+  resetMatch() {
     this.setState({
       match: null,
       selectedSuggestions: 0
     })
-  };
+  }
 
   /**
    * Clone children with up to date props
    *
    * @returns {Object}
    */
-  getChildren = () => {
+  getChildren() {
     // Remove all props we use and pass this others to DraftJS default Editor component
     const {
       editorState,
@@ -246,14 +255,14 @@ class Autocomplete extends Component {
       children,
       child => React.cloneElement(child, childrenProps)
     );
-  };
+  }
 
   /**
    * Build suggestions list component
    *
    * @returns Component
    */
-  buildSuggestionsList = () => {
+  buildSuggestionsList() {
     const { focus, match, selectedSuggestion } = this.state;
 
     if (!match) return null;
@@ -276,7 +285,7 @@ class Autocomplete extends Component {
     });
 
     return <List display={focus} {...position}>{items}</List>;
-  };
+  }
 
   /**
    * Callback when an item was clicked
@@ -284,7 +293,7 @@ class Autocomplete extends Component {
    * @param item
    * @param match
    */
-  onSuggestionClick = (item, match) => {
+  onSuggestionClick(item, match) {
     const { editorState, onChange } = this.props;
 
     // Update editor state
@@ -296,12 +305,12 @@ class Autocomplete extends Component {
       match: null,
       focus: true // Need to set focus state to true and onFocus doesn't seems to be called
     });
-  };
+  }
 
   /**
    * Add entity with item defined by selectedSuggestion
    */
-  addEntityWithSelectedSuggestion = () => {
+  addEntityWithSelectedSuggestion() {
     const { match, selectedSuggestion } = this.state;
     const { editorState, onChange } = this.props;
 
@@ -311,9 +320,9 @@ class Autocomplete extends Component {
       this.resetMatch();
       onChange(newEditorState);
     }
-  };
+  }
 
-  onFocus = () => {
+  onFocus() {
     this.setState({
       focus: true
     });
@@ -321,9 +330,9 @@ class Autocomplete extends Component {
     if (this.props.onFocus) {
       this.props.onFocus();
     }
-  };
+  }
 
-  onBlur = () => {
+  onBlur() {
     this.setState({
       focus: false
     });
@@ -331,9 +340,9 @@ class Autocomplete extends Component {
     if (this.props.onBlur) {
       this.props.onBlur();
     }
-  };
+  }
 
-  onDownArrow = (e) => {
+  onDownArrow(e) {
     const { focus, match, selectedSuggestion } = this.state;
 
     // Prevent default if match displayed
@@ -352,9 +361,9 @@ class Autocomplete extends Component {
     if (this.props.onDownArrow) {
       this.props.onDownArrow();
     }
-  };
+  }
 
-  onUpArrow = (e) => {
+  onUpArrow(e) {
     const { focus, match, selectedSuggestion } = this.state;
 
     // Prevent default if match displayed
@@ -372,9 +381,9 @@ class Autocomplete extends Component {
     if (this.props.onUpArrow) {
       this.props.onUpArrow();
     }
-  };
+  }
 
-  onEscape = (e) => {
+  onEscape(e) {
     const { focus, match } = this.state;
 
     // Prevent default if match displayed
@@ -390,9 +399,9 @@ class Autocomplete extends Component {
     if (this.props.onEscape) {
       this.props.onEscape();
     }
-  };
+  }
 
-  onTab = (e) => {
+  onTab(e) {
     const { focus, match } = this.state;
 
     // Prevent default if match displayed
@@ -404,9 +413,9 @@ class Autocomplete extends Component {
     if (this.props.onEscape) {
       this.props.onEscape();
     }
-  };
+  }
 
-  keyBindingFn = (e) => {
+  keyBindingFn(e) {
     const { focus, match } = this.state;
 
     if (focus && match && e.keyCode === 13) {
@@ -414,16 +423,16 @@ class Autocomplete extends Component {
     }
 
     return getDefaultKeyBinding(e);
-  };
+  }
 
-  handleKeyCommand = (command) => {
+  handleKeyCommand(command) {
     if (command === 'add-entity') {
       this.addEntityWithSelectedSuggestion();
       return 'handled';
     }
 
     return 'not-handled';
-  };
+  }
 
   render() {
     const childrenWithProps = this.getChildren();
