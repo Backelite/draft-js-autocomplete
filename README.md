@@ -69,17 +69,19 @@ class App extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <Autocomplete editorState={editorState} onChange={this.onChange} autocompletes={this.autocompletes}>
-          <Editor />
-        </Autocomplete>
-      </React.Fragment>
+      <Autocomplete editorState={editorState} onChange={this.onChange} autocompletes={this.autocompletes}>
+        <Editor />
+      </Autocomplete>
     );
   }
 }
 
 export default App;
 ```
+
+### Autocomplete component
+
+Autocomplete accept all the props that draft-js Editor component accept as well as an `autocompletes` prop.
 
 ### Example
 
