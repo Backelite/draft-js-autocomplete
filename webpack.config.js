@@ -3,7 +3,10 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const src = path.resolve(__dirname, 'src');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: [
+    'babel-polyfill',
+    './src/index.js'
+  ],
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
