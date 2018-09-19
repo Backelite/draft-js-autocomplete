@@ -235,6 +235,7 @@ class Autocomplete extends Component {
     } = this.props;
 
     const childrenProps = {
+      ...rest,
       editorState,
       onChange,
       onFocus: this.onFocus,
@@ -244,8 +245,7 @@ class Autocomplete extends Component {
       onEscape: this.onEscape,
       onTab: this.onTab,
       keyBindingFn: this.keyBindingFn,
-      handleKeyCommand: this.handleKeyCommand,
-      ...rest
+      handleKeyCommand: this.handleKeyCommand      
     };
 
     return React.Children.map(
