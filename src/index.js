@@ -90,7 +90,8 @@ class Autocomplete extends Component {
    * @returns {CompositeDraftDecorator}
    */
   getDecorator() {
-    const { autocompletes } = this.props;
+    const { autocompletes, editorState } = this.props;
+    const existingDecorators = editorState.getDecorator();
 
     const strategies = autocompletes.reduce((previous, autocomplete) => {
       const entityStrategy = {
@@ -105,7 +106,7 @@ class Autocomplete extends Component {
       };
       previous.push(entityStrategy, autocompleteStrategy);
       return previous;
-    }, []);
+    }, existingDecorators ? existingDecorators._decorators : []);
 
     return new CompositeDecorator(strategies);
   }
